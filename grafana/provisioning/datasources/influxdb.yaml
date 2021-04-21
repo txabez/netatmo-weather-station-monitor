@@ -1,0 +1,11 @@
+apiVersion: 1
+
+datasources:
+  - name: InfluxDB-Netatmo
+    type: influxdb
+    access: proxy
+    database: netatmo
+    url: http://db.netatmo.txabez.org:8086
+    jsonData:
+      httpMode: GET
+      timeInterval: 60s

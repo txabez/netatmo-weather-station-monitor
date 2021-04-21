@@ -1,0 +1,32 @@
+version: "3.9"
+services:
+  agent:
+    image: python4netatmo
+    container_name: agent.netatmo.txabez.org
+    volumes:
+      - ./lnetatmo_influx.py:/usr/local/bin/lnetatmo_influx.py
+      - ./crontab:/etc/cron.d/netatmo
+      - ./entrypoint.sh:/usr/local/bin/entrypoint.sh
+    entrypoint: /usr/local/bin/entrypoint.sh
+  db:
+    image: influxdb
+    container_name: db.netatmo.txabez.org
+    ports:
+      - "8086:8086"
+    volumes:
+      - ./data/influxdb:/var/lib/influxdb
+    environment:
+      - INFLUXDB_DB=netatmo
+      - INFLUXDB_ADMIN_USER=admin
+      - INFLUXDB_ADMIN_PASSWORD=supersecretpassword
+      - INFLUXDB_USER=netatmo
+      - INFLUXDB_USER_PASSWORD=secretpassword
+  dashboard:
+    image: grafana/grafana
+    container_name: dashboard.netatmo.txabez.org
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data/grafana:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/etc/grafana/dashboards
